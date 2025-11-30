@@ -171,14 +171,14 @@ if not exist "%FILE%" (
     echo [CREATED] HeaderPanel.java
 ) else ( echo [SKIP] HeaderPanel.java already exists )
 
-REM --- 6. Create Main & Data Files ---
+REM --- 6. Create com.bugtracking.main.Main & Data Files ---
 
-set "FILE=src\com\bugtracking\Main.java"
+set "FILE=src\com\bugtracking\com.bugtracking.main.Main.java"
 if not exist "%FILE%" (
     echo package com.bugtracking; > "%FILE%"
-    echo public class Main { public static void main(String[] args) {} } >> "%FILE%"
-    echo [CREATED] Main.java
-) else ( echo [SKIP] Main.java already exists )
+    echo public class com.bugtracking.main.Main { public static void main(String[] args) {} } >> "%FILE%"
+    echo [CREATED] com.bugtracking.main.Main.java
+) else ( echo [SKIP] com.bugtracking.main.Main.java already exists )
 
 if not exist "data\users.txt" (
     type nul > data\users.txt

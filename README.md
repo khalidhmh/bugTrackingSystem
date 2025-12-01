@@ -41,7 +41,7 @@ bugTrackingSystem/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/khalidhmh/bugTrackingSystem.git
+   git clone <repository-url>
    cd bugTrackingSystem
    ```
 
@@ -51,7 +51,7 @@ bugTrackingSystem/
    mkdir -p out
 
    # Compile all Java files
-   javac -d out -sourcepath src $(find src -name "*.java")
+   find src -name "*.java" -exec javac -d out -sourcepath src {} +
    ```
 
    On Windows:

@@ -499,7 +499,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         
         // If search is empty, show all users
         if (searchText.isEmpty()) {
-            updateDashboard(getAllUsers());
+            updateDashboard( fetchAllUsers());
             return;
         }
         
@@ -520,6 +520,11 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
         AddUserForm addUserForm = new AddUserForm(this, true);
         addUserForm.setVisible(true);
+        
+        // Refresh table if user was added
+        if (addUserForm.isUserAdded()) {
+            updateDashboard(fetchAllUsers());
+        }
     }//GEN-LAST:event_btnAddUserActionPerformed
 
     private void btnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUserActionPerformed
@@ -531,9 +536,18 @@ public class AdminDashboard extends javax.swing.JFrame {
                 javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
-        // TODO: Open EditUserForm dialog with selected user data
-        EditUserForm editUserForm = new EditUserForm(this, true);
+        
+        // Get user ID from selected row
+        int userId = Integer.parseInt(usersTable.getValueAt(selectedRow, 0).toString());
+        
+        // Open EditUserForm dialog with selected user
+        EditUserForm editUserForm = new EditUserForm(this, true, userId);
         editUserForm.setVisible(true);
+        
+        // Refresh table if user was updated
+        if (editUserForm.isUserUpdated()) {
+            updateDashboard( fetchAllUsers());
+        }
     }//GEN-LAST:event_btnEditUserActionPerformed
 
     private void btnDeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteUserActionPerformed
@@ -556,15 +570,15 @@ public class AdminDashboard extends javax.swing.JFrame {
             String username = usersTable.getValueAt(selectedRow, 2).toString();
 
             userDAO.delete(userId);
-            updateDashboard(getAllUsers());
+            
             ((javax.swing.table.DefaultTableModel) usersTable.getModel()).removeRow(selectedRow);
-            javax.swing.JOptionPane.showMessageDialog(this, "User with username :" + username + " deleted successfully!");
+            javax.swing.JOptionPane.showMessageDialog(this, "User with Username : '" + username + "' deleted successfully!");
         }
     }//GEN-LAST:event_btnDeleteUserActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         javax.swing.JOptionPane.showMessageDialog(this, "Refreshing user list...");
-        updateDashboard(getAllUsers());
+        updateDashboard( fetchAllUsers());
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
@@ -601,7 +615,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         return userDAO.findById(1); // Dummy user for now
     }
     
-    private List<User> getAllUsers() {
+    private List<User> fetchAllUsers() {
         UserDAO userDAO = new UserDAO();
         userDAO.refresh();
         return userDAO.findAll();
@@ -667,7 +681,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             // Sample data for testing
             dashboard.updateStats(userDAO.count(), userDAO.countByRole(Role.PROJECT_MANAGER), userDAO.countByRole(Role.DEVELOPER), userDAO.countByRole(Role.TESTER));
             
-            dashboard.updateDashboard(dashboard.getAllUsers());
+            dashboard.updateDashboard(dashboard. fetchAllUsers());
 
             dashboard.setVisible(true);
         });

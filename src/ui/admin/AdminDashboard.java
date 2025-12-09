@@ -459,8 +459,14 @@ public class AdminDashboard extends javax.swing.JFrame {
             "Confirm Logout",
             javax.swing.JOptionPane.YES_NO_OPTION);
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            // TODO: Clear session and show login form
+            // Clear session and show login form
+            utils.SessionManager.clearSession();
             this.dispose();
+            java.awt.EventQueue.invokeLater(() -> {
+                ui.common.LoginForm loginForm = new ui.common.LoginForm();
+                loginForm.setLocationRelativeTo(null);
+                loginForm.setVisible(true);
+            });
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 

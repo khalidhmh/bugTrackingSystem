@@ -21,12 +21,11 @@ public class UserDAO {
     private static final String DELIMITER = "\\|";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     
-    private List<User> usersCache;
+    private static List<User> usersCache = new ArrayList<>();
     
     // ==================== Constructor ====================
     
     public UserDAO() {
-        this.usersCache = new ArrayList<>();
         loadFromFile();
         
         // Create default admin if no users exist
@@ -59,7 +58,7 @@ public class UserDAO {
         // Add to cache and save
         usersCache.add(user);
         saveToFile();
-        
+
         return user;
     }
     
@@ -350,6 +349,7 @@ public class UserDAO {
      * Reload data from file (refresh cache)
      */
     public void refresh() {
+        usersCache.clear();
         loadFromFile();
     }
 }

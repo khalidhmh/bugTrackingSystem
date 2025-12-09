@@ -293,6 +293,7 @@ public class UserDAO {
      */
     private User parseUser(String line) {
          //  will be handeld by Belal
+         return null;
     }
     
     /**

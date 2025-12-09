@@ -1,0 +1,4 @@
+# Users Database
+# Format: id|name|email|password|role
+# Roles: ADMIN, DEVELOPER, TESTER, PROJECT_MANAGER
+# Example: 1|John Admin|john@email.com|password123|ADMIN

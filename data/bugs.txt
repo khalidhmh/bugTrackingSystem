@@ -1,0 +1,5 @@
+# Bugs Database
+# Format: id|title|description|projectName|status|priority|reporterId|assigneeId|createdDate|updatedDate
+# Status: NEW, OPEN, IN_PROGRESS, FIXED, VERIFIED, CLOSED, REOPENED
+# Priority: LOW, MEDIUM, HIGH, CRITICAL
+# Example: 1|Login button not working|Cannot click login button|MyProject|NEW|HIGH|3||2024-01-01|2024-01-01

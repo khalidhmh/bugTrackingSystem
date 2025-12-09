@@ -17,6 +17,7 @@ public class AdminDashboard extends javax.swing.JFrame {
      */
     public AdminDashboard() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -28,22 +29,518 @@ public class AdminDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        headerPanel = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblWelcome = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JButton();
+        mainTabbedPane = new javax.swing.JTabbedPane();
+        dashboardPanel = new javax.swing.JPanel();
+        statsPanel = new javax.swing.JPanel();
+        usersCountPanel = new javax.swing.JPanel();
+        lblUsersCountTitle = new javax.swing.JLabel();
+        lblUsersCountValue = new javax.swing.JLabel();
+        pmCountPanel = new javax.swing.JPanel();
+        lblPMCountTitle = new javax.swing.JLabel();
+        lblPMCountValue = new javax.swing.JLabel();
+        devCountPanel = new javax.swing.JPanel();
+        lblDevCountTitle = new javax.swing.JLabel();
+        lblDevCountValue = new javax.swing.JLabel();
+        testerCountPanel = new javax.swing.JPanel();
+        lblTesterCountTitle = new javax.swing.JLabel();
+        lblTesterCountValue = new javax.swing.JLabel();
+        activityPanel = new javax.swing.JPanel();
+        lblRecentActivity = new javax.swing.JLabel();
+        activityScrollPane = new javax.swing.JScrollPane();
+        txtActivity = new javax.swing.JTextArea();
+        usersPanel = new javax.swing.JPanel();
+        usersTopPanel = new javax.swing.JPanel();
+        lblSearch = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+        btnAddUser = new javax.swing.JButton();
+        btnEditUser = new javax.swing.JButton();
+        btnDeleteUser = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
+        usersScrollPane = new javax.swing.JScrollPane();
+        usersTable = new javax.swing.JTable();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard - Bug Tracking System");
+        setMinimumSize(new java.awt.Dimension(1000, 700));
+
+        headerPanel.setBackground(new java.awt.Color(0, 102, 102));
+        headerPanel.setPreferredSize(new java.awt.Dimension(1000, 60));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitle.setText("Bug Tracking System - Admin Panel");
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblWelcome.setForeground(new java.awt.Color(255, 255, 255));
+        lblWelcome.setText("Welcome, Admin");
+
+        btnLogout.setBackground(new java.awt.Color(220, 53, 69));
+        btnLogout.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnLogout.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogout.setText("Logout");
+        btnLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLogout.addActionListener(evt -> btnLogoutActionPerformed(evt));
+
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblWelcome)
+                .addGap(18, 18, 18)
+                .addComponent(btnLogout)
+                .addGap(20, 20, 20))
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTitle)
+                    .addComponent(lblWelcome)
+                    .addComponent(btnLogout))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        mainTabbedPane.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+
+        dashboardPanel.setBackground(new java.awt.Color(245, 245, 245));
+
+        statsPanel.setOpaque(false);
+        statsPanel.setLayout(new java.awt.GridLayout(1, 4, 20, 0));
+
+        usersCountPanel.setBackground(new java.awt.Color(0, 123, 255));
+
+        lblUsersCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblUsersCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblUsersCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUsersCountTitle.setText("Total Users");
+
+        lblUsersCountValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblUsersCountValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblUsersCountValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUsersCountValue.setText("0");
+
+        javax.swing.GroupLayout usersCountPanelLayout = new javax.swing.GroupLayout(usersCountPanel);
+        usersCountPanel.setLayout(usersCountPanelLayout);
+        usersCountPanelLayout.setHorizontalGroup(
+            usersCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(usersCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsersCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblUsersCountValue, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        usersCountPanelLayout.setVerticalGroup(
+            usersCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblUsersCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblUsersCountValue)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(usersCountPanel);
+
+        pmCountPanel.setBackground(new java.awt.Color(40, 167, 69));
+
+        lblPMCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblPMCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblPMCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblPMCountTitle.setText("Project Managers");
+
+        lblPMCountValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblPMCountValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblPMCountValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblPMCountValue.setText("0");
+
+        javax.swing.GroupLayout pmCountPanelLayout = new javax.swing.GroupLayout(pmCountPanel);
+        pmCountPanel.setLayout(pmCountPanelLayout);
+        pmCountPanelLayout.setHorizontalGroup(
+            pmCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pmCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pmCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPMCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblPMCountValue, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        pmCountPanelLayout.setVerticalGroup(
+            pmCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pmCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblPMCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblPMCountValue)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(pmCountPanel);
+
+        devCountPanel.setBackground(new java.awt.Color(255, 193, 7));
+
+        lblDevCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblDevCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblDevCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDevCountTitle.setText("Developers");
+
+        lblDevCountValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblDevCountValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblDevCountValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDevCountValue.setText("0");
+
+        javax.swing.GroupLayout devCountPanelLayout = new javax.swing.GroupLayout(devCountPanel);
+        devCountPanel.setLayout(devCountPanelLayout);
+        devCountPanelLayout.setHorizontalGroup(
+            devCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(devCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(devCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDevCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblDevCountValue, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        devCountPanelLayout.setVerticalGroup(
+            devCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(devCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblDevCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDevCountValue)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(devCountPanel);
+
+        testerCountPanel.setBackground(new java.awt.Color(220, 53, 69));
+
+        lblTesterCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblTesterCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTesterCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTesterCountTitle.setText("Testers");
+
+        lblTesterCountValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblTesterCountValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblTesterCountValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTesterCountValue.setText("0");
+
+        javax.swing.GroupLayout testerCountPanelLayout = new javax.swing.GroupLayout(testerCountPanel);
+        testerCountPanel.setLayout(testerCountPanelLayout);
+        testerCountPanelLayout.setHorizontalGroup(
+            testerCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testerCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(testerCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTesterCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTesterCountValue, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        testerCountPanelLayout.setVerticalGroup(
+            testerCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testerCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblTesterCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTesterCountValue)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(testerCountPanel);
+
+        activityPanel.setBackground(new java.awt.Color(255, 255, 255));
+        activityPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)));
+
+        lblRecentActivity.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblRecentActivity.setText("Recent Activity");
+
+        txtActivity.setEditable(false);
+        txtActivity.setColumns(20);
+        txtActivity.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        txtActivity.setRows(5);
+        txtActivity.setText("• System initialized\n• Ready to manage users and bugs\n• No recent activity");
+        activityScrollPane.setViewportView(txtActivity);
+
+        javax.swing.GroupLayout activityPanelLayout = new javax.swing.GroupLayout(activityPanel);
+        activityPanel.setLayout(activityPanelLayout);
+        activityPanelLayout.setHorizontalGroup(
+            activityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(activityPanelLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(activityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(activityScrollPane)
+                    .addGroup(activityPanelLayout.createSequentialGroup()
+                        .addComponent(lblRecentActivity)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(15, 15, 15))
+        );
+        activityPanelLayout.setVerticalGroup(
+            activityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(activityPanelLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(lblRecentActivity)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(activityScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout dashboardPanelLayout = new javax.swing.GroupLayout(dashboardPanel);
+        dashboardPanel.setLayout(dashboardPanelLayout);
+        dashboardPanelLayout.setHorizontalGroup(
+            dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dashboardPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(activityPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
+        );
+        dashboardPanelLayout.setVerticalGroup(
+            dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dashboardPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(activityPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
+        );
+
+        mainTabbedPane.addTab("Dashboard", dashboardPanel);
+
+        usersPanel.setBackground(new java.awt.Color(245, 245, 245));
+
+        usersTopPanel.setOpaque(false);
+
+        lblSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSearch.setText("Search:");
+
+        txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSearch.setPreferredSize(new java.awt.Dimension(200, 30));
+
+        btnSearch.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnSearch.setText("Search");
+        btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(evt -> btnSearchActionPerformed(evt));
+
+        btnAddUser.setBackground(new java.awt.Color(40, 167, 69));
+        btnAddUser.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnAddUser.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddUser.setText("+ Add User");
+        btnAddUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddUser.addActionListener(evt -> btnAddUserActionPerformed(evt));
+
+        btnEditUser.setBackground(new java.awt.Color(0, 123, 255));
+        btnEditUser.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnEditUser.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditUser.setText("Edit");
+        btnEditUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditUser.addActionListener(evt -> btnEditUserActionPerformed(evt));
+
+        btnDeleteUser.setBackground(new java.awt.Color(220, 53, 69));
+        btnDeleteUser.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnDeleteUser.setForeground(new java.awt.Color(255, 255, 255));
+        btnDeleteUser.setText("Delete");
+        btnDeleteUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteUser.addActionListener(evt -> btnDeleteUserActionPerformed(evt));
+
+        btnRefresh.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnRefresh.setText("Refresh");
+        btnRefresh.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRefresh.addActionListener(evt -> btnRefreshActionPerformed(evt));
+
+        javax.swing.GroupLayout usersTopPanelLayout = new javax.swing.GroupLayout(usersTopPanel);
+        usersTopPanel.setLayout(usersTopPanelLayout);
+        usersTopPanelLayout.setHorizontalGroup(
+            usersTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersTopPanelLayout.createSequentialGroup()
+                .addComponent(lblSearch)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSearch)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAddUser)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEditUser)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDeleteUser)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRefresh))
+        );
+        usersTopPanelLayout.setVerticalGroup(
+            usersTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersTopPanelLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(usersTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSearch)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch)
+                    .addComponent(btnAddUser)
+                    .addComponent(btnEditUser)
+                    .addComponent(btnDeleteUser)
+                    .addComponent(btnRefresh))
+                .addGap(10, 10, 10))
+        );
+
+        usersTable.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        usersTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Full Name", "Username", "Email", "Role", "Created Date"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        usersTable.setRowHeight(30);
+        usersTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        usersScrollPane.setViewportView(usersTable);
+
+        javax.swing.GroupLayout usersPanelLayout = new javax.swing.GroupLayout(usersPanel);
+        usersPanel.setLayout(usersPanelLayout);
+        usersPanelLayout.setHorizontalGroup(
+            usersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(usersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(usersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
+                    .addComponent(usersTopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
+        );
+        usersPanelLayout.setVerticalGroup(
+            usersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersPanelLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(usersTopPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(usersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
+        );
+
+        mainTabbedPane.addTab("Manage Users", usersPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainTabbedPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(mainTabbedPane))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to logout?",
+            "Confirm Logout",
+            javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            // TODO: Clear session and show login form
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String searchText = txtSearch.getText().trim();
+        // TODO: Implement search functionality
+        javax.swing.JOptionPane.showMessageDialog(this, "Searching for: " + searchText);
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
+        // TODO: Open AddUserForm dialog
+        AddUserForm addUserForm = new AddUserForm(this, true);
+        addUserForm.setVisible(true);
+    }//GEN-LAST:event_btnAddUserActionPerformed
+
+    private void btnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUserActionPerformed
+        int selectedRow = usersTable.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please select a user to edit.",
+                "No Selection",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // TODO: Open EditUserForm dialog with selected user data
+        EditUserForm editUserForm = new EditUserForm(this, true);
+        editUserForm.setVisible(true);
+    }//GEN-LAST:event_btnEditUserActionPerformed
+
+    private void btnDeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteUserActionPerformed
+        int selectedRow = usersTable.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please select a user to delete.",
+                "No Selection",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete this user?",
+            "Confirm Delete",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.WARNING_MESSAGE);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            // TODO: Delete user from database
+            ((javax.swing.table.DefaultTableModel) usersTable.getModel()).removeRow(selectedRow);
+            javax.swing.JOptionPane.showMessageDialog(this, "User deleted successfully!");
+        }
+    }//GEN-LAST:event_btnDeleteUserActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO: Reload users from database
+        javax.swing.JOptionPane.showMessageDialog(this, "Refreshing user list...");
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    /**
+     * Updates the dashboard statistics
+     */
+    public void updateStats(int totalUsers, int projectManagers, int developers, int testers) {
+        lblUsersCountValue.setText(String.valueOf(totalUsers));
+        lblPMCountValue.setText(String.valueOf(projectManagers));
+        lblDevCountValue.setText(String.valueOf(developers));
+        lblTesterCountValue.setText(String.valueOf(testers));
+    }
+
+    /**
+     * Adds a user to the table
+     */
+    public void addUserToTable(String id, String fullName, String username, String email, String role, String createdDate) {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) usersTable.getModel();
+        model.addRow(new Object[]{id, fullName, username, email, role, createdDate});
+    }
+
+    /**
+     * Clears all users from the table
+     */
+    public void clearUsersTable() {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) usersTable.getModel();
+        model.setRowCount(0);
+    }
 
     /**
      * @param args the command line arguments
@@ -67,9 +564,52 @@ public class AdminDashboard extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new AdminDashboard().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            AdminDashboard dashboard = new AdminDashboard();
+            // Sample data for testing
+            dashboard.updateStats(25, 5, 12, 8);
+            dashboard.addUserToTable("1", "John Doe", "johnd", "john@email.com", "ADMIN", "2024-01-01");
+            dashboard.addUserToTable("2", "Jane Smith", "janes", "jane@email.com", "PROJECT_MANAGER", "2024-01-02");
+            dashboard.addUserToTable("3", "Bob Wilson", "bobw", "bob@email.com", "DEVELOPER", "2024-01-03");
+            dashboard.addUserToTable("4", "Alice Brown", "aliceb", "alice@email.com", "TESTER", "2024-01-04");
+            dashboard.setVisible(true);
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel activityPanel;
+    private javax.swing.JScrollPane activityScrollPane;
+    private javax.swing.JButton btnAddUser;
+    private javax.swing.JButton btnDeleteUser;
+    private javax.swing.JButton btnEditUser;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JPanel dashboardPanel;
+    private javax.swing.JPanel devCountPanel;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel lblDevCountTitle;
+    private javax.swing.JLabel lblDevCountValue;
+    private javax.swing.JLabel lblPMCountTitle;
+    private javax.swing.JLabel lblPMCountValue;
+    private javax.swing.JLabel lblRecentActivity;
+    private javax.swing.JLabel lblSearch;
+    private javax.swing.JLabel lblTesterCountTitle;
+    private javax.swing.JLabel lblTesterCountValue;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblUsersCountTitle;
+    private javax.swing.JLabel lblUsersCountValue;
+    private javax.swing.JLabel lblWelcome;
+    private javax.swing.JTabbedPane mainTabbedPane;
+    private javax.swing.JPanel pmCountPanel;
+    private javax.swing.JPanel statsPanel;
+    private javax.swing.JPanel testerCountPanel;
+    private javax.swing.JTextArea txtActivity;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JPanel usersCountPanel;
+    private javax.swing.JPanel usersPanel;
+    private javax.swing.JScrollPane usersScrollPane;
+    private javax.swing.JTable usersTable;
+    private javax.swing.JPanel usersTopPanel;
     // End of variables declaration//GEN-END:variables
 }

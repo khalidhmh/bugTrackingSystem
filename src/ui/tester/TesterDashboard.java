@@ -4,6 +4,17 @@
  */
 package ui.tester;
 
+import dao.UserDAO;
+import java.awt.Component;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+import models.Role;
+import models.User;
+
 /**
  * Tester Dashboard - Main screen for testers
  * @author Team
@@ -17,6 +28,7 @@ public class TesterDashboard extends javax.swing.JFrame {
      */
     public TesterDashboard() {
         initComponents();
+        loadDevelopers();
     }
 
     /**
@@ -28,22 +40,46 @@ public class TesterDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cbx_devlopers = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tester Dashboard - Bug Tracking System");
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(257, 257, 257)
+                        .addComponent(cbx_devlopers, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(185, 185, 185)
+                        .addComponent(jButton1)))
+                .addContainerGap(256, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(88, 88, 88)
+                .addComponent(jButton1)
+                .addGap(69, 69, 69)
+                .addComponent(cbx_devlopers, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(373, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        System.out.println(cbx_devlopers.getSelectedItem());
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -65,11 +101,46 @@ public class TesterDashboard extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new TesterDashboard().setVisible(true));
     }
 
+    private void loadDevelopers() {
+        UserDAO userDAO = new UserDAO();
+        List<User> listOfDevelopers = userDAO.findByRole(Role.ADMIN);
+        
+        DefaultComboBoxModel<User> model = new DefaultComboBoxModel<>();
+        
+        for (User u : listOfDevelopers) {
+            model.addElement(u);
+        }
+        
+        cbx_devlopers.setModel(model);
+        
+        // Set custom renderer to show only user names
+        cbx_devlopers.setRenderer(new ListCellRenderer<User>() {
+            private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+            
+            @Override
+            public Component getListCellRendererComponent(JList<? extends User> list, User value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(
+                        list, value, index, isSelected, cellHasFocus);
+                
+                if (value != null) {
+                    renderer.setText(value.getFirstName() + " " + value.getLastName());
+                }
+                
+                return renderer;
+            }
+        });
+        
+        cbx_devlopers.setSelectedIndex(-1);
+        
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<User> cbx_devlopers;
+    private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,6 +4,12 @@
  */
 package ui.projectmanager;
 
+import dao.BugDAO; 
+import models.Bug;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.io.IOException;
 /**
  * Project Manager Dashboard - Main screen for project managers
  * @author Team
@@ -11,13 +17,20 @@ package ui.projectmanager;
 public class PMDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PMDashboard.class.getName());
-
+    private final BugDAO bugDAO;  
     /**
      * Creates new form PMDashboard
      */
     public PMDashboard() {
         initComponents();
+     
+        this.bugDAO = new BugDAO(); 
+        
+        loadDashboardStats();
+        loadBugsTable(null, null); 
     }
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,22 +41,429 @@ public class PMDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        headerPanel = new javax.swing.JPanel();
+        lblWelcome = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JButton();
+        lblTitle = new javax.swing.JLabel();
+        statsPanel = new javax.swing.JPanel();
+        usersCountPanel = new javax.swing.JPanel();
+        lblUsersCountTitle = new javax.swing.JLabel();
+        lblTotalBugsValue = new javax.swing.JLabel();
+        devCountPanel = new javax.swing.JPanel();
+        lblDevCountTitle = new javax.swing.JLabel();
+        lblOpenValue = new javax.swing.JLabel();
+        pmCountPanel = new javax.swing.JPanel();
+        lblPMCountTitle = new javax.swing.JLabel();
+        lblFixedValue = new javax.swing.JLabel();
+        testerCountPanel = new javax.swing.JPanel();
+        lblTesterCountTitle = new javax.swing.JLabel();
+        lblClosedValue = new javax.swing.JLabel();
+        usersTopPanel = new javax.swing.JPanel();
+        lblSearch = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+        btnShowAll = new javax.swing.JButton();
+        usersScrollPane = new javax.swing.JScrollPane();
+        BugsTable = new javax.swing.JTable();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Project Manager Dashboard - Bug Tracking System");
+
+        headerPanel.setBackground(new java.awt.Color(0, 102, 102));
+        headerPanel.setPreferredSize(new java.awt.Dimension(1000, 60));
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblWelcome.setForeground(new java.awt.Color(255, 255, 255));
+        lblWelcome.setText("Welcome, PM");
+
+        btnLogout.setBackground(new java.awt.Color(220, 53, 69));
+        btnLogout.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnLogout.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogout.setText("Logout");
+        btnLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLogout.addActionListener(this::btnLogoutActionPerformed);
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitle.setText("Bug Tracking System - Project Manager Dashboard");
+
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblWelcome)
+                .addGap(18, 18, 18)
+                .addComponent(btnLogout)
+                .addGap(20, 20, 20))
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblWelcome)
+                    .addComponent(btnLogout)
+                    .addComponent(lblTitle))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        statsPanel.setOpaque(false);
+        statsPanel.setLayout(new java.awt.GridLayout(1, 4, 20, 0));
+
+        usersCountPanel.setBackground(new java.awt.Color(0, 153, 255));
+
+        lblUsersCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblUsersCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblUsersCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUsersCountTitle.setText("Total Bugs");
+
+        lblTotalBugsValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblTotalBugsValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblTotalBugsValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTotalBugsValue.setText("0");
+
+        javax.swing.GroupLayout usersCountPanelLayout = new javax.swing.GroupLayout(usersCountPanel);
+        usersCountPanel.setLayout(usersCountPanelLayout);
+        usersCountPanelLayout.setHorizontalGroup(
+            usersCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(usersCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsersCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTotalBugsValue, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        usersCountPanelLayout.setVerticalGroup(
+            usersCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblUsersCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTotalBugsValue)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(usersCountPanel);
+
+        devCountPanel.setBackground(new java.awt.Color(204, 51, 0));
+
+        lblDevCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblDevCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblDevCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDevCountTitle.setText("Open");
+
+        lblOpenValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblOpenValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblOpenValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblOpenValue.setText("0");
+
+        javax.swing.GroupLayout devCountPanelLayout = new javax.swing.GroupLayout(devCountPanel);
+        devCountPanel.setLayout(devCountPanelLayout);
+        devCountPanelLayout.setHorizontalGroup(
+            devCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(devCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(devCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDevCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblOpenValue, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        devCountPanelLayout.setVerticalGroup(
+            devCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(devCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblDevCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblOpenValue)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(devCountPanel);
+
+        pmCountPanel.setBackground(new java.awt.Color(40, 167, 69));
+
+        lblPMCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblPMCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblPMCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblPMCountTitle.setText("Fixed");
+
+        lblFixedValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblFixedValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblFixedValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblFixedValue.setText("0");
+
+        javax.swing.GroupLayout pmCountPanelLayout = new javax.swing.GroupLayout(pmCountPanel);
+        pmCountPanel.setLayout(pmCountPanelLayout);
+        pmCountPanelLayout.setHorizontalGroup(
+            pmCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pmCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pmCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFixedValue, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(lblPMCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        pmCountPanelLayout.setVerticalGroup(
+            pmCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pmCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblPMCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblFixedValue)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(pmCountPanel);
+
+        testerCountPanel.setBackground(new java.awt.Color(102, 102, 102));
+
+        lblTesterCountTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblTesterCountTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTesterCountTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTesterCountTitle.setText("Closed");
+
+        lblClosedValue.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblClosedValue.setForeground(new java.awt.Color(255, 255, 255));
+        lblClosedValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblClosedValue.setText("0");
+
+        javax.swing.GroupLayout testerCountPanelLayout = new javax.swing.GroupLayout(testerCountPanel);
+        testerCountPanel.setLayout(testerCountPanelLayout);
+        testerCountPanelLayout.setHorizontalGroup(
+            testerCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testerCountPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(testerCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTesterCountTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblClosedValue, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        testerCountPanelLayout.setVerticalGroup(
+            testerCountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testerCountPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblTesterCountTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblClosedValue)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        statsPanel.add(testerCountPanel);
+
+        usersTopPanel.setOpaque(false);
+
+        lblSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSearch.setText("Search:");
+
+        txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSearch.setPreferredSize(new java.awt.Dimension(200, 30));
+
+        btnSearch.setText("Search");
+        btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(this::btnSearchActionPerformed);
+
+        btnShowAll.setText("Show All");
+        btnShowAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnShowAll.addActionListener(this::btnShowAllActionPerformed);
+
+        BugsTable.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        BugsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Bug ID", "Title", "Status", "Reporter (Tester)", "Assigned To (Dev)", "Created Date", "Updated Date"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        BugsTable.setRowHeight(30);
+        BugsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        usersScrollPane.setViewportView(BugsTable);
+
+        javax.swing.GroupLayout usersTopPanelLayout = new javax.swing.GroupLayout(usersTopPanel);
+        usersTopPanel.setLayout(usersTopPanelLayout);
+        usersTopPanelLayout.setHorizontalGroup(
+            usersTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersTopPanelLayout.createSequentialGroup()
+                .addComponent(lblSearch)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSearch)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnShowAll)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(usersScrollPane)
+        );
+        usersTopPanelLayout.setVerticalGroup(
+            usersTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(usersTopPanelLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(usersTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSearch)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch)
+                    .addComponent(btnShowAll))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(usersScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(89, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(usersTopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 816, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(usersTopPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+private void loadDashboardStats() {
+    try {
+        
+        int totalBugs = bugDAO.getTotalBugsCount();
+        int openBugs = bugDAO.getBugsCountByStatus("Open");
+        int fixedBugs = bugDAO.getBugsCountByStatus("Fixed");
+        int closedBugs = bugDAO.getBugsCountByStatus("Closed");
+
+        lblTotalBugsValue.setText(String.valueOf(totalBugs)); 
+        lblOpenValue.setText(String.valueOf(openBugs));       
+        lblFixedValue.setText(String.valueOf(fixedBugs));     
+        lblClosedValue.setText(String.valueOf(closedBugs));
+
+}
+    catch (java.io.IOException e) { 
+    JOptionPane.showMessageDialog(this, 
+                "Error loading dashboard stats from file: " + e.getMessage(), 
+                "File I/O Error", JOptionPane.ERROR_MESSAGE);
+    e.printStackTrace();
+    }
+}
+
+/**
+ * @param searchField 
+ * @param searchValue 
+ */
+private void loadBugsTable(String searchField, String searchValue) {
+    DefaultTableModel model = (DefaultTableModel) BugsTable.getModel();
+    model.setRowCount(0); 
+
+    try {
+        List<Bug> bugs;
+        
+        if (searchField == null || searchValue == null || searchValue.trim().isEmpty()) {
+            bugs = bugDAO.getAllBugs(); 
+        } else {
+            bugs = bugDAO.searchBugs(searchField, searchValue.trim()); // افترض أن searchBugs(field, value) موجودة
+        }
+
+        for (Bug bug : bugs) {
+            Object[] row = new Object[]{
+                bug.getId(),
+                bug.getTitle(),
+                bug.getStatus(),
+                bug.getReporter(), // (Tester)
+                bug.getAssignedToDev(),
+                bug.getCreatedDate(),
+                bug.getUpdatedDate()
+            };
+            model.addRow(row);
+        }
+
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, 
+                "Error loading bug table data: " + e.getMessage(), 
+                "Database Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+}
+
+
+
+    
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        int confirm;
+    confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            
+            "Are you sure you want to logout?",
+            "Confirm Logout",
+            javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            // Open Login Form and close Admin Dashboard
+            new ui.common.LoginForm().setVisible(true);
+            this.dispose();
+            
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+
+
+
+
+    
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        
+        String searchValue = txtSearch.getText().trim();
+        
+        if (searchValue.isEmpty()) {
+            loadBugsTable(null, null); 
+            return;
+        }
+
+        try {
+            List<Bug> results = bugDAO.searchBugs("Title", searchValue);
+            
+            if (results.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                        "No bugs found matching: " + searchValue,
+                        "Search Results",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            loadBugsTable("Title", searchValue); 
+            
+        } catch (IOException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Could not load data. Check file permissions.",
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
+        loadBugsTable(null, null);
+        txtSearch.setText("");
+    }//GEN-LAST:event_btnShowAllActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -67,9 +487,47 @@ public class PMDashboard extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new PMDashboard().setVisible(true));
+       try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
+      
+       java.awt.EventQueue.invokeLater(() -> new PMDashboard().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable BugsTable;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnShowAll;
+    private javax.swing.JPanel devCountPanel;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel lblClosedValue;
+    private javax.swing.JLabel lblDevCountTitle;
+    private javax.swing.JLabel lblFixedValue;
+    private javax.swing.JLabel lblOpenValue;
+    private javax.swing.JLabel lblPMCountTitle;
+    private javax.swing.JLabel lblSearch;
+    private javax.swing.JLabel lblTesterCountTitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTotalBugsValue;
+    private javax.swing.JLabel lblUsersCountTitle;
+    private javax.swing.JLabel lblWelcome;
+    private javax.swing.JPanel pmCountPanel;
+    private javax.swing.JPanel statsPanel;
+    private javax.swing.JPanel testerCountPanel;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JPanel usersCountPanel;
+    private javax.swing.JScrollPane usersScrollPane;
+    private javax.swing.JPanel usersTopPanel;
     // End of variables declaration//GEN-END:variables
+
 }
+

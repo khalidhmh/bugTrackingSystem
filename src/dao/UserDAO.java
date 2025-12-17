@@ -2,11 +2,14 @@ package dao;
 
 import models.User;
 import models.Role;
+import config.AppConfig;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Data Access Object for User file operations
@@ -20,6 +23,15 @@ public class UserDAO {
     private static final String FILE_PATH = "data/users.txt";
     private static final String DELIMITER = "\\|";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final String HEADER = "id" + DELIMITER
+                                        + "firstName" + DELIMITER
+                                        + "lastName" + DELIMITER
+                                        + "username" + DELIMITER
+                                        + "email" + DELIMITER
+                                        + "password" + DELIMITER
+                                        + "role" + DELIMITER
+                                        + "createdAt" + DELIMITER
+                                        + "updatedAt";
     
     private static List<User> usersCache = new ArrayList<>();
     
@@ -277,40 +289,105 @@ public class UserDAO {
      * Load all users from file into cache
      */
     private void loadFromFile() {
-        //  will be handeld by Belal    
+        try {
+            Scanner scanner = new Scanner(new File(FILE_PATH));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (line.isEmpty() || line.equals(HEADER))
+                    continue;
+                User user = parseUser(line);
+                if (user != null) {
+                    usersCache.add(user);
+                }
+
+            }
+            scanner.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //✅  will be handeld by Belal
     }
     
     /**
      * Save all users from cache to file
      */
     private void saveToFile() {
-       //  will be handeld by Belal
+        try {
+            PrintWriter printWriter = new PrintWriter(FILE_PATH);
+            printWriter.println(HEADER);
+            if (!usersCache.isEmpty()){
+                for (int i = 0; i < usersCache.size(); i++) {
+                    User user = usersCache.get(i);
+                    printWriter.println(formatUser(user));
+                }
+            }
+            printWriter.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+       //✅  will be handeld by Belal
     }
     
     /**
-     * Parse a line from file into User object
+     * Parse a string line from file into User object
      */
     private User parseUser(String line) {
-         //  will be handeld by Belal
-         return null;
+        try {
+            String[] dataFields = line.split(DELIMITER);
+            if (dataFields[0].equals("id"))
+                return null;
+            else {
+                User user = new User();
+                user.setId(Integer.parseInt(dataFields[0]));
+                user.setFirstName(dataFields[1]);
+                user.setLastName(dataFields[2]);
+                user.setUsername(dataFields[3]);
+                user.setEmail(dataFields[4]);
+                user.setPassword(dataFields[5]);
+                user.setRole(Role.valueOf(dataFields[6]));
+                user.setCreatedAt(LocalDateTime.parse(dataFields[7], DATE_FORMAT));
+                user.setUpdatedAt(LocalDateTime.parse(dataFields[8], DATE_FORMAT));
+                return user;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        //✅  will be handeld by Belal
     }
     
     /**
-     * Format a User object into a line for file storage
+     * Format a User object into a string line for file storage
      */
     private String formatUser(User user) {
-        //  will be handeld by Belal    
-        
-        return "this is a dummy return, please implement the method 'belal'";
+        return user.getId() + DELIMITER
+                + user.getFirstName() + DELIMITER
+                + user.getLastName() + DELIMITER
+                + user.getUsername() + DELIMITER
+                + user.getEmail() + DELIMITER
+                + user.getPassword() + DELIMITER
+                + user.getRole() + DELIMITER
+                + user.getCreatedAt() + DELIMITER
+                + user.getUpdatedAt();
+        //✅  will be handeld by Belal
     }
     
     /**
      * Create the data file with header
      */
     private void createDataFile() {
-        //  will be handeld by Belal
+        try{
+            File file = new File(FILE_PATH);
+            if (file.createNewFile()){       //create file if not exist and return 1(if exist return 0)
+                PrintWriter printWriter = new PrintWriter(FILE_PATH);
+                printWriter.println(HEADER);
+                printWriter.close();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //✅  will be handeld by Belal
     }
-    
+
     /**
      * Generate the next available ID
      */

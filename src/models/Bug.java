@@ -9,12 +9,7 @@ package models;
 
 import java.time.LocalDateTime;
 
-enum BugPriority {
-    LOW,
-    MEDIUM,
-    HIGH,
-    CRITICAL
-}
+import enums.BugPriority;
 enum BugStatus {
     OPEN,
     IN_PROGRESS,

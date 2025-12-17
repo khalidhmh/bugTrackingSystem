@@ -1,4 +1,2 @@
-# Users Database
-# Format: id|name|email|password|role
-# Roles: ADMIN, DEVELOPER, TESTER, PROJECT_MANAGER
-# Example: 1|John Admin|john@email.com|password123|ADMIN
+id\|firstName\|lastName\|username\|email\|password\|role\|createdAt\|updatedAt
+1\|System\|Admin\|admin\|admin@system.com\|admin123\|ADMIN\|2025-12-18T01:37:27.096271400\|2025-12-18T01:37:27.096271400

@@ -10,12 +10,7 @@ package models;
 import java.time.LocalDateTime;
 
 import enums.BugPriority;
-enum BugStatus {
-    OPEN,
-    IN_PROGRESS,
-    FIXED,
-    CLOSED
-}
+import enums.BugStatus;
 
 public class Bug {
 

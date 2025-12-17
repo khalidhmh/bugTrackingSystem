@@ -111,6 +111,10 @@ public class Bug {
     public User getReporter() {
         return reporter;
     }
+    
+    public void setReporter(User reporter){
+        this.reporter = reporter;
+    }
 
     public User getAssignee() {
         return assignee;

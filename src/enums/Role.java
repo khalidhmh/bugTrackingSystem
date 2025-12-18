@@ -1,4 +1,4 @@
-package models;
+package enums;
 
 /**
  * Enum for user roles

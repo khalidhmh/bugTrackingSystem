@@ -1,7 +1,6 @@
 package dao;
 
 import models.Bug;
-import models.Role;
 import models.User;
 
 import enums.*;

@@ -3,6 +3,8 @@ package models;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import enums.Role;
+
 /**
  * User entity model - Contains ONLY data and basic validation
  * Management operations (CRUD) in UserDAO/UserService

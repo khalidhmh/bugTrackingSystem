@@ -5,7 +5,7 @@
 package ui.admin;
 
 import dao.UserDAO;
-import models.Role;
+import enums.Role;
 import models.User;
 import javax.swing.JOptionPane;
 

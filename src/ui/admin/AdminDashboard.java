@@ -5,6 +5,7 @@
 package ui.admin;
 
 import dao.UserDAO;
+import enums.Role;
 import ui.common.*;
 import dao.*;
 import models.*;

@@ -1,8 +1,8 @@
 package dao;
 
 import models.User;
-import models.Role;
 import config.AppConfig;
+import enums.Role;
 
 import java.io.*;
 import java.time.LocalDateTime;

@@ -35,7 +35,12 @@ public class DeveloperDashboard extends javax.swing.JFrame {
      * Creates new form DeveloperDashboard
      */
     public DeveloperDashboard() {
-        initComponents();
+        initComponents();    
+    // 1. Fetch the bugs and update the UI immediately on startup
+    List<Bug> bugs = fetchAllBugs();
+    updateDashboard(bugs);
+    
+
         usersTable1.addMouseListener(new java.awt.event.MouseAdapter() {
     @Override
     public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -457,7 +462,21 @@ public class DeveloperDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSearch1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        models.User currentUser = ui.admin.AdminDashboard.getLogedInUser();
+        
+      
+        if (currentUser == null) {
+             currentUser = new models.User();
+             currentUser.setId(3);
+             currentUser.setUsername("Developer_Test_User");
+        }
+        // -----------------------------
+        if (currentUser != null) {
+   
+            new ui.common.NotificationDialog(this, currentUser).setVisible(true);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "No user logged in!");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

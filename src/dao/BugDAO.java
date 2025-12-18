@@ -4,6 +4,7 @@ import models.Bug;
 import models.Role;
 import models.User;
 
+import enums.*;
 
 import java.io.File;
 import java.io.IOException;

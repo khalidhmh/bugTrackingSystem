@@ -9,13 +9,13 @@ import enums.BugPriority;
 import enums.BugStatus;
 import dao.BugDAO;
 import dao.UserDAO;
+import services.EmailService;
 import models.Bug;
 import models.Role;
 import models.User;
 import java.io.File;
 import java.util.List;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 public class ReportBugForm extends javax.swing.JDialog {
 
@@ -207,6 +207,18 @@ public class ReportBugForm extends javax.swing.JDialog {
             // Save bug to the text file
             BugDAO bugDAO = new BugDAO();
             Bug savedBug = bugDAO.save(bug);
+            
+            // send email to the assgined developer
+            try{
+                EmailService email = new EmailService();
+                email.sendEmail(selectedDeveloper.getId()+"", currentTester.getId()+"", title,description);
+                System.out.println(">>Notification sent to developer: " + selectedDeveloper.getUsername());
+            } catch(Exception ex){
+                System.err.println(">>Warning: Failed to send notification\n"
+                        + "Error: " + ex.getMessage());
+            }
+            
+            
             
             JOptionPane.showMessageDialog(this, 
                 "Bug #" + savedBug.getId() + " reported successfully!\n" +

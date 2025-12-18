@@ -44,13 +44,17 @@
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="bugDescriptionText" alignment="0" max="32767" attributes="0"/>
                           <Component id="bugTitleText" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="severityList" pref="102" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="severityList" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
                               <Component id="developerLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="211" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="239" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="addPoCBtn" alignment="0" min="-2" pref="131" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="addPoCBtn" min="-2" pref="131" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="pocFileLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -58,7 +62,7 @@
                       <Component id="assignBugBtn" min="-2" pref="202" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="147" max="32767" attributes="0"/>
+              <EmptySpace pref="142" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -86,6 +90,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="PoCLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="addPoCBtn" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
+                  <Component id="pocFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               <Component id="assignBugBtn" min="-2" max="-2" attributes="0"/>
@@ -155,7 +160,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;User&gt;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="PoCLabel">
@@ -170,6 +175,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addPoCBtnActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="pocFileLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="No file selected"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

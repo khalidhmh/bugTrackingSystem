@@ -5,24 +5,33 @@ package ui.tester;
  */
 
 // import for Files
-import enums.BugSeverityEnum;
+import enums.BugPriority;
+import enums.BugStatus;
 import dao.BugDAO;
-import dao.UserDAO; 
+import dao.UserDAO;
+import models.Bug;
+import models.Role;
+import models.User;
 import java.io.File;
-
-// import for GUI
+import java.util.List;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ReportBugForm extends javax.swing.JDialog {
 
     /**
      * Creates new form ReportBugForm
      */
-    public ReportBugForm(java.awt.Frame parent, boolean modal) {
+    private File selectedPocFile;
+    private boolean bugReported = false;
+    private User currentTester;
+
+    public ReportBugForm(java.awt.Frame parent, boolean modal, User tester) {
         super(parent, modal);
+        this.currentTester = tester;
         initComponents();
+        setLocationRelativeTo(parent);
+        loadDevelopers();
     }
 
     /**
@@ -45,6 +54,7 @@ public class ReportBugForm extends javax.swing.JDialog {
         devList = new javax.swing.JComboBox<>();
         PoCLabel = new javax.swing.JLabel();
         addPoCBtn = new javax.swing.JButton();
+        pocFileLabel = new javax.swing.JLabel();
 
         setTitle("Report New Bug");
 
@@ -68,6 +78,8 @@ public class ReportBugForm extends javax.swing.JDialog {
         addPoCBtn.setText("Add PoC");
         addPoCBtn.addActionListener(this::addPoCBtnActionPerformed);
 
+        pocFileLabel.setText("No file selected");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,16 +102,19 @@ public class ReportBugForm extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(bugDescriptionText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(bugTitleText)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(severityList, 0, 102, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(severityList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(66, 66, 66)
                                 .addComponent(developerLabel)
-                                .addGap(211, 211, 211))
-                            .addComponent(addPoCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(239, 239, 239))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(addPoCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(pocFileLabel))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(255, 255, 255)
                         .addComponent(assignBugBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,7 +136,8 @@ public class ReportBugForm extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(PoCLabel)
-                    .addComponent(addPoCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addPoCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pocFileLabel))
                 .addGap(38, 38, 38)
                 .addComponent(assignBugBtn)
                 .addGap(42, 42, 42))
@@ -133,6 +149,84 @@ public class ReportBugForm extends javax.swing.JDialog {
     private void assignBugBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignBugBtnActionPerformed
         // Assign Bug to developer -> save info on text files, and clear the form
         // list them depending on priorty
+        // Validate inputs
+        String title = bugTitleText.getText().trim();
+        String description = bugDescriptionText.getText().trim();
+        
+        if (title.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter a bug title.", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            bugTitleText.requestFocus();
+            return;
+        }
+        
+        if (description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter a bug description.", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            bugDescriptionText.requestFocus();
+            return;
+        }
+        
+        if (devList.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "Please select a developer to assign the bug.", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            // Create new bug
+            Bug bug = new Bug();
+            bug.setTitle(title);
+            bug.setDescription(description);
+            
+            // Set severity
+            String severityStr = (String) severityList.getSelectedItem();
+            bug.setPriority(BugPriority.valueOf(severityStr)); //BugSeverityEnum.valueOf(severityStr)
+            
+            // Set status
+            bug.setStatus(BugStatus.OPEN);
+            
+            // Set reporter (current tester)
+            bug.setReporter(currentTester);
+            
+            // Set assigned developer
+            User selectedDeveloper = (User) devList.getSelectedItem();
+            bug.setAssignee(selectedDeveloper);
+            
+            // Set PoC file path if selected
+            if (selectedPocFile != null) {
+                bug.setPocFilePath(selectedPocFile.getAbsolutePath());
+            }
+            
+            // Save bug to the text file
+            BugDAO bugDAO = new BugDAO();
+            Bug savedBug = bugDAO.save(bug);
+            
+            JOptionPane.showMessageDialog(this, 
+                "Bug #" + savedBug.getId() + " reported successfully!\n" +
+                "Title: " + savedBug.getTitle() + "\n" +
+                "Assigned to: " + selectedDeveloper.getFullName() + "\n" +
+                "Severity: " + savedBug.getPriority(), 
+                "Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+            
+            bugReported = true;
+            clearForm();
+            this.dispose();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error reporting bug: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+//            e.printStackTrace();
+        }
     }//GEN-LAST:event_assignBugBtnActionPerformed
 
     private void addPoCBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPoCBtnActionPerformed
@@ -147,27 +241,77 @@ public class ReportBugForm extends javax.swing.JDialog {
     private javax.swing.JLabel bugDiscriptionLabel;
     private javax.swing.JLabel bugTitleLabel;
     private javax.swing.JTextField bugTitleText;
-    private javax.swing.JComboBox<String> devList;
+    private javax.swing.JComboBox<User> devList;
     private javax.swing.JLabel developerLabel;
+    private javax.swing.JLabel pocFileLabel;
     private javax.swing.JLabel severityLabel;
     private javax.swing.JComboBox<String> severityList;
     // End of variables declaration//GEN-END:variables
 
-    // Logic of variables
-    BugSeverityEnum severity;
     
     // methods
     private void openFileChooser(){
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choose Proof of Concept File");
         
-        fileChooser.setDialogTitle("Choose file of the proof of concept");
-        // show file chooser
         int userSelection = fileChooser.showOpenDialog(this);
         
-        // check if user choosed a file
-        if(userSelection == JFileChooser.APPROVE_OPTION){
-            File selectedFile = fileChooser.getSelectedFile();
-            
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            selectedPocFile = fileChooser.getSelectedFile();
+            pocFileLabel.setText(selectedPocFile.getName());
+            pocFileLabel.setToolTipText(selectedPocFile.getAbsolutePath());
         }
+    }
+
+    private void loadDevelopers() {
+        UserDAO userDAO = new UserDAO();
+        List<User> developers = userDAO.findByRole(Role.DEVELOPER);
+        
+        DefaultComboBoxModel<User> model = new DefaultComboBoxModel<>();
+        
+        for (User dev : developers) {
+            model.addElement(dev);
+        }
+        
+        devList.setModel(model);
+        
+        // Set custom renderer to show developer names
+        devList.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index, 
+                    boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof User) {
+                    User user = (User) value;
+                    setText(user.getFullName() + " (" + user.getUsername() + ")");
+                }
+                return this;
+            }
+        });
+        
+        if (developers.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "No developers found in the system.\nPlease contact admin to add developers.", 
+                "Warning", 
+                JOptionPane.WARNING_MESSAGE);
+        } else {
+            devList.setSelectedIndex(0);
+        }
+    }
+    
+    private void clearForm() {
+        bugTitleText.setText("");
+        bugDescriptionText.setText("");
+        severityList.setSelectedIndex(0);
+        selectedPocFile = null;
+        pocFileLabel.setText("No file selected");
+        if (devList.getModel().getSize() > 0) {
+            devList.setSelectedIndex(0);
+        }
+    }
+    
+    public boolean isBugReported() {
+        return bugReported;
     }
 }

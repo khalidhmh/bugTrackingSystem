@@ -7,72 +7,71 @@ package ui.developer;
 import enums.BugPriority;
 import enums.BugStatus;
 import dao.UserDAO;
+import dao.BugDAO;
 import java.util.List;
 import models.User;
 import ui.common.LoginForm;
-import services.AuthService;
+import services.SessionManager;
 import models.Bug;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import static ui.admin.AdminDashboard.getLogedInUser;
 
 
 /**
  * Developer Dashboard - Main screen for developers
  * @author Team
  */
-
-/**
- * Handles data logic for the Developer Dashboard
- */
 public class DeveloperDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DeveloperDashboard.class.getName());
+    private User currentDeveloper;
 
     /**
      * Creates new form DeveloperDashboard
      */
     public DeveloperDashboard() {
-        initComponents();    
-    // 1. Fetch the bugs and update the UI immediately on startup
-    List<Bug> bugs = fetchAllBugs();
-    updateDashboard(bugs);
-    
-
+        currentDeveloper = SessionManager.getInstance().getCurrentUser();
+        initComponents();
+        setLocationRelativeTo(null);
+        initializeDashboard();
+        
+        // Double-click to open bug details
         usersTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-    @Override
-    public void mouseClicked(java.awt.event.MouseEvent evt) {
-        if (evt.getClickCount() == 2) { // Double-click
-            int selectedRow = usersTable1.getSelectedRow();
-            if (selectedRow != -1) {
-                // Get the bug ID from the selected row
-                int bugId = (Integer) usersTable1.getValueAt(selectedRow, 0);
-                
-                // Find the bug object from your bug list
-                Bug selectedBug = null;
-                List<Bug> bugs = fetchAllBugs();
-                for (Bug bug : bugs) {
-                    if (bug.getId() == bugId) {
-                        selectedBug = bug;
-                        break;
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int selectedRow = usersTable1.getSelectedRow();
+                    if (selectedRow != -1) {
+                        int bugId = (Integer) usersTable1.getValueAt(selectedRow, 0);
+                        Bug selectedBug = findBugById(bugId);
+                        if (selectedBug != null) {
+                            BugDetailsDialog dialog = new BugDetailsDialog(DeveloperDashboard.this, selectedBug);
+                            dialog.setVisible(true);
+                            updateDashboard(fetchAllBugs());
+                        }
                     }
                 }
-                
-                // Open the details dialog
-                if (selectedBug != null) {
-                    BugDetailsDialog dialog = new BugDetailsDialog(DeveloperDashboard.this, selectedBug);
-                    dialog.setVisible(true);
-                    
-                    // Refresh the table after dialog closes
-                    updateDashboard(fetchAllBugs());
-                }
+            }
+        });
+    }
+    
+    private void initializeDashboard() {
+        if (currentDeveloper != null) {
+            lblWelcome2.setText("Welcome, " + currentDeveloper.getFullName());
+        }
+        List<Bug> bugs = fetchAllBugs();
+        updateDashboard(bugs);
+    }
+    
+    private Bug findBugById(int bugId) {
+        List<Bug> bugs = fetchAllBugs();
+        for (Bug bug : bugs) {
+            if (bug.getId() == bugId) {
+                return bug;
             }
         }
-    }
-});
-        
+        return null;
     }
 
     /**
@@ -442,7 +441,8 @@ public class DeveloperDashboard extends javax.swing.JFrame {
             "Confirm Logout",
             javax.swing.JOptionPane.YES_NO_OPTION);
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            // Open Login Form and close Admin Dashboard
+            // Clear session and open Login Form
+            SessionManager.getInstance().logout();
             new LoginForm().setVisible(true);
             this.dispose();
         }
@@ -535,125 +535,84 @@ public class DeveloperDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel usersTopPanel1;
     // End of variables declaration                   
 
-public List<Bug> fetchAllBugs() {
-    List<Bug> bugList = new ArrayList<>();
-  
-    User loggedInDev = getLogedInUser(); // This should return the current developer
-    
-    // Create all bugs
-    List<Bug> allBugs = new ArrayList<>();
-    
-    // Bug 1 - Assigned to developer1 (youssef.ibrahim - ID 6)
-    Bug bug1 = new Bug();
-    bug1.setId(1);
-    bug1.setTitle("Payment Gateway Crashes on Checkout");
-    bug1.setDescription("When users click 'Complete Purchase', the payment gateway throws a 500 error. This is blocking all transactions.");
-    bug1.setPriority(BugPriority.HIGH);
-    bug1.setStatus(BugStatus.OPEN);
-
-    allBugs.add(bug1);
-    
-    // Bug 2 - Assigned to developer1 (youssef.ibrahim - ID 6)
-    Bug bug2 = new Bug();
-    bug2.setId(2);
-    bug2.setTitle("Login System Accepts Invalid Credentials");
-    bug2.setDescription("Security vulnerability: login form accepting any password if username exists. Critical security issue affecting user data safety.");
-    bug2.setPriority(BugPriority.HIGH);
-    bug2.setStatus(BugStatus.IN_PROGRESS);
-
-    allBugs.add(bug2);
-    
-    // Filter bugs: Only return bugs assigned to the logged-in developer
-//    for (Bug bug : allBugs) {
-//        if (bug.getAssignee() != null && bug.getAssignee().getId() == loggedInDev.getId()) {
-//            bugList.add(bug);
-//        }
-//    }
-    
-    // Sort by priority (Critical first, then High, Medium, Low)
-    bugList.sort((b1, b2) -> {
-        int priority1 = getPriorityWeight(b1.getPriority());
-        int priority2 = getPriorityWeight(b2.getPriority());
-        return priority2 - priority1; // Descending order (highest priority first)
-    });
-    
-    return bugList;
-}
-
-/**
- * Returns weight for priority sorting
- * Higher weight = Higher priority
- */
-private int getPriorityWeight(BugPriority priority) {
-    switch (priority) {
-        case CRITICAL: return 4;
-        case HIGH: return 3;
-        case MEDIUM: return 2;
-        case LOW: return 1;
-        default: return 0;
+    public List<Bug> fetchAllBugs() {
+        if (currentDeveloper == null) {
+            return new ArrayList<>();
+        }
+        
+        BugDAO bugDAO = new BugDAO();
+        bugDAO.refresh();
+        
+        // Get bugs assigned to this developer
+        List<Bug> myBugs = bugDAO.findByAssigneeId(currentDeveloper.getId());
+        
+        // Sort by priority
+        myBugs.sort((b1, b2) -> {
+            int priority1 = getPriorityWeight(b1.getPriority());
+            int priority2 = getPriorityWeight(b2.getPriority());
+            return priority2 - priority1;
+        });
+        
+        return myBugs;
     }
-}
 
-private void updateDashboard(List<Bug> bugs) {
-    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) usersTable1.getModel();
-    
-    // Clear existing rows
-    model.setRowCount(0);
-    
-    // Add each bug as a row
-    for (Bug bug : bugs) {
-        Object[] rowData = {
-            bug.getId(),
-            bug.getTitle(),
-            bug.getReporter() != null ? bug.getReporter().getUsername() : "Unknown", // Show reporter name
-            bug.getPriority().name(),  // Convert enum to String (CRITICAL, HIGH, etc.)
-            bug.getStatus().name(),    // Convert enum to String (OPEN, IN_PROGRESS, etc.)
-            formatDateTime(bug.getCreatedAt()),
-            formatDateTime(bug.getUpdatedAt())
-        };
-        model.addRow(rowData);
+    private int getPriorityWeight(BugPriority priority) {
+        switch (priority) {
+            case CRITICAL: return 4;
+            case HIGH: return 3;
+            case MEDIUM: return 2;
+            case LOW: return 1;
+            default: return 0;
+        }
     }
-    
-    // Update statistics panels
-    updateStatistics(bugs);
-}
 
-/**
- * Formats LocalDateTime to readable string
- * @param dateTime The LocalDateTime to format
- * @return Formatted date string
- */
-private String formatDateTime(LocalDateTime dateTime) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    return dateTime.format(formatter);
-}
+    private void updateDashboard(List<Bug> bugs) {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) usersTable1.getModel();
+        model.setRowCount(0);
+        
+        UserDAO userDAO = new UserDAO();
+        
+        for (Bug bug : bugs) {
+            User reporter = userDAO.findById(bug.getReporterId());
+            String reporterName = reporter != null ? reporter.getUsername() : "Unknown";
+            
+            Object[] rowData = {
+                bug.getId(),
+                bug.getTitle(),
+                reporterName,
+                bug.getPriority().name(),
+                bug.getStatus().name(),
+                formatDateTime(bug.getCreatedAt()),
+                formatDateTime(bug.getUpdatedAt())
+            };
+            model.addRow(rowData);
+        }
+        
+        updateStatistics(bugs);
+    }
 
-/**
- * Updates the statistics panels with bug counts
- * @param bugs List of all bugs assigned to the developer
- */
-private void updateStatistics(List<Bug> bugs) {
-        // Total bugs assigned to this developer
+    private String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return dateTime.format(formatter);
+    }
+
+    private void updateStatistics(List<Bug> bugs) {
         lblUsersCountValue.setText(String.valueOf(bugs.size()));
-
-        // Bugs fixed (status = RESOLVED)
+        
         long fixedCount = bugs.stream()
             .filter(bug -> bug.getStatus() == BugStatus.RESOLVED)
             .count();
         lblPMCountValue.setText(String.valueOf(fixedCount));
-
-        // Bugs closed (status = CLOSED)
+        
         long closedCount = bugs.stream()
             .filter(bug -> bug.getStatus() == BugStatus.CLOSED)
             .count();
         lblDevCountValue.setText(String.valueOf(closedCount));
-
-        // Bugs opened (status = OPEN)
-        long openCount = bugs.stream()
-            .filter(bug -> bug.getStatus() == BugStatus.OPEN)
+        
+        long inProgressCount = bugs.stream()
+            .filter(bug -> bug.getStatus() == BugStatus.IN_PROGRESS)
             .count();
-        lblTesterCountValue.setText(String.valueOf(openCount));
+        lblTesterCountValue.setText(String.valueOf(inProgressCount));
     }
 }
-
-

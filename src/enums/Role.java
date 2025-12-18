@@ -1,8 +1,7 @@
 package enums;
 
 /**
- * Enum for user roles
- * @author Team
+ * User roles
  */
 public enum Role {
     ADMIN,

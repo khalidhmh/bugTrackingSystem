@@ -1,0 +1,17 @@
+recipientId|senderId|message|timestamp
+2|3|New Bug Assigned: Login button not responsive - Project: E-Commerce App - Priority: HIGH|2025-12-10T09:00:00
+2|3|New Bug Assigned: Payment gateway timeout - Project: E-Commerce App - Priority: CRITICAL|2025-12-11T10:30:00
+5|7|New Bug Assigned: Dashboard loading slow - Project: Admin Portal - Priority: MEDIUM|2025-12-08T14:00:00
+6|3|New Bug Assigned: SQL injection vulnerability - Project: E-Commerce App - Priority: CRITICAL|2025-12-12T08:00:00
+5|7|New Bug Assigned: Image upload fails - Project: User Management - Priority: MEDIUM|2025-12-13T11:00:00
+3|2|Bug Status Updated: Navbar overlapping content - New Status: CLOSED|2025-12-10T15:00:00
+6|3|New Bug Assigned: Email notifications delayed - Project: Notification Service - Priority: HIGH|2025-12-14T10:00:00
+5|7|New Bug Assigned: Memory leak in reports - Project: Admin Portal - Priority: HIGH|2025-12-15T08:30:00
+8|2|Bug Status Updated: Password reset not working - New Status: RESOLVED|2025-12-12T10:00:00
+6|3|New Bug Assigned: Cart items disappear - Project: E-Commerce App - Priority: HIGH|2025-12-16T11:30:00
+7|5|Bug Status Updated: Checkbox alignment issue - New Status: CLOSED|2025-12-07T16:00:00
+6|8|New Bug Assigned: API rate limiting broken - Project: API Gateway - Priority: HIGH|2025-12-17T09:00:00
+2|3|New Bug Assigned: Search returns wrong results - Project: E-Commerce App - Priority: MEDIUM|2025-12-15T15:00:00
+7|5|Bug Status Updated: Date picker broken - New Status: CLOSED|2025-12-06T12:00:00
+5|8|New Bug Assigned: Export to PDF fails - Project: Admin Portal - Priority: MEDIUM|2025-12-18T08:00:00
+7|5|Bug Status Updated: Dashboard loading slow - New Status: RESOLVED|2025-12-16T11:00:00

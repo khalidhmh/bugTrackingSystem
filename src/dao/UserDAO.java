@@ -21,7 +21,8 @@ import java.util.Scanner;
 public class UserDAO {
     
     private static final String FILE_PATH = "data/users.txt";
-    private static final String DELIMITER = "\\|";
+    private static final String DELIMITER_REGEX = "\\|";  // For splitting
+    private static final String DELIMITER = "|";           // For writing
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private static final String HEADER = "id" + DELIMITER
                                         + "firstName" + DELIMITER
@@ -333,7 +334,7 @@ public class UserDAO {
      */
     private User parseUser(String line) {
         try {
-            String[] dataFields = line.split(DELIMITER);
+            String[] dataFields = line.split(DELIMITER_REGEX);
             if (dataFields[0].equals("id"))
                 return null;
             else {
@@ -352,7 +353,6 @@ public class UserDAO {
         } catch (Exception e) {
             return null;
         }
-        //✅  will be handeld by Belal
     }
     
     /**
@@ -428,5 +428,28 @@ public class UserDAO {
     public void refresh() {
         usersCache.clear();
         loadFromFile();
+    }
+    
+    // ==================== ALIAS METHODS ====================
+    
+    /**
+     * Get users by role (alias for findByRole)
+     */
+    public List<User> getUsersByRole(Role role) {
+        return findByRole(role);
+    }
+    
+    /**
+     * Get user by email (alias for findByEmail)
+     */
+    public User getUserByEmail(String email) {
+        return findByEmail(email);
+    }
+    
+    /**
+     * Get user by ID (alias for findById)
+     */
+    public User getUserById(int id) {
+        return findById(id);
     }
 }

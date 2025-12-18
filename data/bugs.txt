@@ -1,5 +1,16 @@
-# Bugs Database
-# Format: id|title|description|projectName|status|priority|reporterId|assigneeId|createdDate|updatedDate
-# Status: NEW, OPEN, IN_PROGRESS, FIXED, VERIFIED, CLOSED, REOPENED
-# Priority: LOW, MEDIUM, HIGH, CRITICAL
-# Example: 1|Login button not working|Cannot click login button|MyProject|NEW|HIGH|3||2024-01-01|2024-01-01
+id|title|description|projectName|bugType|priority|bugLevel|status|reporterId|assigneeId|screenshotPath|bugDate|createdAt|updatedAt
+1|Login button not responsive|Login button does not respond to clicks on mobile devices|E-Commerce App|UI|HIGH|MAJOR|OPEN|3|2|null|2025-12-10|2025-12-10T09:00:00|2025-12-10T09:00:00
+2|Payment gateway timeout|Payment processing times out after 30 seconds|E-Commerce App|FUNCTIONAL|CRITICAL|CRITICAL|IN_PROGRESS|3|2|null|2025-12-11|2025-12-11T10:30:00|2025-12-15T14:00:00
+3|Dashboard loading slow|Admin dashboard takes 10 seconds to load|Admin Portal|PERFORMANCE|MEDIUM|MODERATE|RESOLVED|7|5|null|2025-12-08|2025-12-08T14:00:00|2025-12-16T11:00:00
+4|SQL injection vulnerability|User input not properly sanitized in search|E-Commerce App|SECURITY|CRITICAL|CRITICAL|IN_PROGRESS|3|6|null|2025-12-12|2025-12-12T08:00:00|2025-12-14T16:00:00
+5|Image upload fails|Users cannot upload profile images larger than 1MB|User Management|FUNCTIONAL|MEDIUM|MINOR|OPEN|7|5|null|2025-12-13|2025-12-13T11:00:00|2025-12-13T11:00:00
+6|Navbar overlapping content|Navigation bar overlaps page content on tablets|E-Commerce App|UI|LOW|MINOR|CLOSED|8|2|null|2025-12-05|2025-12-05T09:00:00|2025-12-10T15:00:00
+7|Email notifications delayed|Order confirmation emails delayed by 2-3 hours|Notification Service|FUNCTIONAL|HIGH|MAJOR|OPEN|3|6|null|2025-12-14|2025-12-14T10:00:00|2025-12-14T10:00:00
+8|Memory leak in reports|Report generation causes memory leak|Admin Portal|PERFORMANCE|HIGH|MAJOR|IN_PROGRESS|7|5|null|2025-12-15|2025-12-15T08:30:00|2025-12-17T09:00:00
+9|Password reset not working|Password reset emails contain expired tokens|User Management|SECURITY|CRITICAL|CRITICAL|RESOLVED|8|2|null|2025-12-09|2025-12-09T13:00:00|2025-12-12T10:00:00
+10|Cart items disappear|Shopping cart items randomly disappear after refresh|E-Commerce App|FUNCTIONAL|HIGH|MAJOR|OPEN|3|6|null|2025-12-16|2025-12-16T11:30:00|2025-12-16T11:30:00
+11|Checkbox alignment issue|Checkboxes in settings page are misaligned|Admin Portal|UI|LOW|MINOR|CLOSED|7|5|null|2025-12-04|2025-12-04T14:00:00|2025-12-07T16:00:00
+12|API rate limiting broken|Rate limiting not enforced on public API|API Gateway|SECURITY|HIGH|MAJOR|OPEN|8|6|null|2025-12-17|2025-12-17T09:00:00|2025-12-17T09:00:00
+13|Search returns wrong results|Product search returns irrelevant results|E-Commerce App|FUNCTIONAL|MEDIUM|MODERATE|IN_PROGRESS|3|2|null|2025-12-15|2025-12-15T15:00:00|2025-12-18T08:00:00
+14|Date picker broken|Date picker component crashes on IE11|Admin Portal|UI|LOW|MINOR|CLOSED|7|5|null|2025-12-03|2025-12-03T10:00:00|2025-12-06T12:00:00
+15|Export to PDF fails|Exporting reports to PDF throws exception|Admin Portal|FUNCTIONAL|MEDIUM|MODERATE|OPEN|8|5|null|2025-12-18|2025-12-18T08:00:00|2025-12-18T08:00:00

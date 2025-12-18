@@ -1,8 +1,7 @@
 package enums;
 
 /**
- *
- * @author Ammar
+ * Bug status values
  */
 public enum BugStatus {
     OPEN,

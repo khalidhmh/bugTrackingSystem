@@ -1,152 +1,116 @@
 package dao;
 
 import models.Bug;
-import models.User;
+import config.AppConfig;
 import enums.*;
-import java.lang.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Data Access Object for Bug file operations
- * File: data/bugs.txt
- * @author Team
  */
 public class BugDAO {
 
-    // TODO: Implement CRUD operations for bugs
-    // TODO: Read/write to bugs.txt file
-    private static final String FILE_PATH = "data/bugs.txt";
+    private static final String FILE_PATH = AppConfig.BUGS_FILE;
     private static final String DELIMITER = "\\|";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    private static final String HEADER = "id" + DELIMITER
-            + "title" + DELIMITER
-            + "description" + DELIMITER
-            + "projectName" + DELIMITER
-            + "status" + DELIMITER
-            + "priority" + DELIMITER
-            + "reporterId" + DELIMITER
-            + "assigneeId" + DELIMITER
-            + "createdDate" + DELIMITER
-            + "updatedDate";
-
-    private static List<Bug> bugsCache = new ArrayList<Bug>();
-
-    // ==================== Constructor ====================
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;
+    
+    private static List<Bug> bugsCache = new ArrayList<>();
 
     public BugDAO() {
+        ensureFileExists();
         loadFromFile();
     }
 
-
     // ==================== CREATE ====================
 
-    /**
-     * Save a new bug to the file
-     *
-     * @param bug The bug to save (ID will be auto-generated)
-     * @return The saved bug with generated ID
-     */
     public Bug save(Bug bug) {
-        // Generate ID
         bug.setId(generateNextId());
-        // Add to cache and save
+        bug.setCreatedAt(LocalDateTime.now());
+        bug.setUpdatedAt(LocalDateTime.now());
         bugsCache.add(bug);
         saveToFile();
-
         return bug;
     }
 
+    /**
+     * Add a new bug (alias for save)
+     */
+    public boolean addBug(Bug bug) {
+        try {
+            save(bug);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error adding bug: " + e.getMessage());
+            return false;
+        }
+    }
 
     // ==================== READ ====================
 
-    /**
-     * Find bug by ID
-     *
-     * @param id The bug ID
-     * @return bug if found, null otherwise
-     */
     public Bug findById(int id) {
         for (Bug bug : bugsCache) {
-            if (bug.getId() == id) {
-                return bug;
-            }
+            if (bug.getId() == id) return bug;
         }
         return null;
     }
 
-
-    /**
-     * Find bug by title
-     *
-     * @param title The title to search
-     * @return title if found, null otherwise
-     */
-    public Bug findByTitle(String title) {
-        for (Bug bug : bugsCache) {
-            if (bug.getTitle().equalsIgnoreCase(title)) {
-                return bug;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get all bugs
-     * @return List of all users
-     */
-    public List<Bug> findAllBugs() {
+    public List<Bug> findAll() {
         return new ArrayList<>(bugsCache);
     }
 
-    /**
-     * Search bugs by title, id
-     * @param searchTerm The search term
-     * @return List of matching bugs
-     */
-    public List<Bug> search(String searchTerm) {
+    public List<Bug> findByStatus(BugStatus status) {
         List<Bug> result = new ArrayList<>();
-        String term = searchTerm.toLowerCase();
-
         for (Bug bug : bugsCache) {
-            if (bug.getTitle().toLowerCase().contains(term) || Integer.parseInt(term) == bug.getId()){
-                result.add(bug);
-            }
+            if (bug.getStatus() == status) result.add(bug);
         }
         return result;
     }
 
+    public List<Bug> findByAssigneeId(int developerId) {
+        List<Bug> result = new ArrayList<>();
+        for (Bug bug : bugsCache) {
+            if (bug.getAssigneeId() == developerId) result.add(bug);
+        }
+        return result;
+    }
+
+    public List<Bug> findByReporterId(int testerId) {
+        List<Bug> result = new ArrayList<>();
+        for (Bug bug : bugsCache) {
+            if (bug.getReporterId() == testerId) result.add(bug);
+        }
+        return result;
+    }
+
+    public List<Bug> findOpenBugs() {
+        List<Bug> result = new ArrayList<>();
+        for (Bug bug : bugsCache) {
+            if (bug.isOpen()) result.add(bug);
+        }
+        return result;
+    }
+
+    public List<Bug> findClosedBugs() {
+        List<Bug> result = new ArrayList<>();
+        for (Bug bug : bugsCache) {
+            if (bug.isClosed()) result.add(bug);
+        }
+        return result;
+    }
 
     // ==================== UPDATE ====================
 
-    /**
-     * Update an existing user
-     *
-     * @param bug The user with updated data
-     * @return true if updated, false if user not found
-     */
     public boolean update(Bug bug) {
         for (int i = 0; i < bugsCache.size(); i++) {
             if (bugsCache.get(i).getId() == bug.getId()) {
-                // Check unique constraints
-                Bug existingByTitle = findByTitle(bug.getTitle());
-                if (existingByTitle != null && existingByTitle.getId() != bug.getId()) {
-                    throw new IllegalArgumentException("Title '" + bug.getTitle() + "' already exists");
-                }
-
-                Bug existingById = findById(bug.getId());
-                if (existingById != null && existingById.getId() != bug.getId()) {
-                    throw new IllegalArgumentException("ID '" + bug.getId() + "' already exists");
-                }
-
-//                bug.setUpdatedDate(LocalDateTime.now());
+                bug.setUpdatedAt(LocalDateTime.now());
                 bugsCache.set(i, bug);
                 saveToFile();
                 return true;
@@ -157,11 +121,6 @@ public class BugDAO {
 
     // ==================== DELETE ====================
 
-    /**
-     * Delete a bug by ID
-     * @param id The bug ID to delete
-     * @return true if deleted, false if not found
-     */
     public boolean delete(int id) {
         for (int i = 0; i < bugsCache.size(); i++) {
             if (bugsCache.get(i).getId() == id) {
@@ -173,176 +132,144 @@ public class BugDAO {
         return false;
     }
 
-    /**
-     * Delete all users (use with caution!)
-     */
-    public void deleteAll() {
-        bugsCache.clear();
-        saveToFile();
+    // ==================== COUNT ====================
+
+    public int count() { return bugsCache.size(); }
+
+    public int countByStatus(BugStatus status) {
+        int count = 0;
+        for (Bug bug : bugsCache) {
+            if (bug.getStatus() == status) count++;
+        }
+        return count;
     }
 
+    public int countByAssignee(int developerId) {
+        int count = 0;
+        for (Bug bug : bugsCache) {
+            if (bug.getAssigneeId() == developerId) count++;
+        }
+        return count;
+    }
+
+    public int countByReporter(int testerId) {
+        int count = 0;
+        for (Bug bug : bugsCache) {
+            if (bug.getReporterId() == testerId) count++;
+        }
+        return count;
+    }
 
     // ==================== FILE OPERATIONS ====================
 
-    /**
-     * Load all bugs from file into cache
-     */
     private void loadFromFile() {
+        bugsCache.clear();
         try {
-            Scanner scanner = new Scanner(new File(FILE_PATH));
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (line.isEmpty() || line.equals(HEADER))
-                    continue;
-                Bug bug = parseBugs(line);
-                if (bug != null) {
-                    bugsCache.add(bug);
-                }
+            File file = new File(FILE_PATH);
+            if (!file.exists()) return;
+            
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#") || line.startsWith("id")) continue;
+                
+                Bug bug = parseBug(line);
+                if (bug != null) bugsCache.add(bug);
             }
-            scanner.close();
+            reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error loading bugs: " + e.getMessage());
         }
     }
 
-
-    /**
-     * Parse a string line from file into Bug object
-     */
-    private Bug parseBugs(String line) {
+    private void saveToFile() {
         try {
-            String[] dataFields = line.split(DELIMITER);
-            if (dataFields[0].equals("id"))
-                return null;
-            else {
-                Bug bug = new Bug();
-                bug.setId(Integer.parseInt(dataFields[0]));
-                bug.setTitle(dataFields[1]);
-                bug.setDescription(dataFields[2]);
-                bug.setProjectName(dataFields[3]);
-                bug.setStatus(BugStatus.valueOf(dataFields[4]));
-                bug.setPriority(BugPriority.valueOf(dataFields[5]);
-                bug.setReporterId(dataFields[6]);
-                bug.setAssigneeId(Role.valueOf(dataFields[7]));
-                bug.setCreatedAt(LocalDateTime.parse(dataFields[8], DATE_FORMAT));
-                bug.setUpdatedAt(LocalDateTime.parse(dataFields[9], DATE_FORMAT));
-                return bug;
+            PrintWriter writer = new PrintWriter(FILE_PATH);
+            writer.println("id|title|description|projectName|bugType|priority|bugLevel|status|reporterId|assigneeId|screenshotPath|bugDate|createdAt|updatedAt");
+            
+            for (Bug bug : bugsCache) {
+                writer.println(formatBug(bug));
             }
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("Error saving bugs: " + e.getMessage());
+        }
+    }
+
+    private Bug parseBug(String line) {
+        try {
+            String[] f = line.split(DELIMITER);
+            if (f.length < 14) return null;
+            
+            Bug bug = new Bug();
+            bug.setId(Integer.parseInt(f[0]));
+            bug.setTitle(f[1]);
+            bug.setDescription(f[2]);
+            bug.setProjectName(f[3]);
+            bug.setBugType(BugType.valueOf(f[4]));
+            bug.setPriority(BugPriority.valueOf(f[5]));
+            bug.setBugLevel(BugLevel.valueOf(f[6]));
+            bug.setStatus(BugStatus.valueOf(f[7]));
+            bug.setReporterId(Integer.parseInt(f[8]));
+            bug.setAssigneeId(Integer.parseInt(f[9]));
+            bug.setScreenshotPath(f[10].equals("null") ? null : f[10]);
+            bug.setBugDate(LocalDate.parse(f[11], DATE_FORMAT));
+            bug.setCreatedAt(LocalDateTime.parse(f[12], DATE_TIME_FORMAT));
+            bug.setUpdatedAt(LocalDateTime.parse(f[13], DATE_TIME_FORMAT));
+            return bug;
         } catch (Exception e) {
             return null;
         }
     }
 
-
-    /**
-     * Save all bugs from cache to file
-     */
-    private void saveToFile() {
-        try {
-            PrintWriter printWriter = new PrintWriter(FILE_PATH);
-            printWriter.println(HEADER);
-            if (!bugsCache.isEmpty()) {
-                for (int i = 0; i < bugsCache.size(); i++) {
-                    Bug bug = bugsCache.get(i);
-                    printWriter.println(formatBug(bug));
-                }
-            }
-            printWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * Format a Bug object into a string line for file storage
-     */
     private String formatBug(Bug bug) {
-        return bug.getId() + DELIMITER
-                + bug.getTitle() + DELIMITER
-                + bug.getDescription() + DELIMITER
-                + bug.getProjectName() + DELIMITER
-                + bug.getStatus() + DELIMITER
-                + bug.getPriority() + DELIMITER;
-        return +bug.getReporter().getId() + DELIMITER
-                + bug.getAssignee().getId() + DELIMITER
-                + bug.getCreatedAt() + DELIMITER
-                + bug.getUpdatedAt();
+        return bug.getId() + "|" +
+               bug.getTitle() + "|" +
+               bug.getDescription() + "|" +
+               bug.getProjectName() + "|" +
+               bug.getBugType() + "|" +
+               bug.getPriority() + "|" +
+               (bug.getBugLevel() != null ? bug.getBugLevel() : BugLevel.MINOR) + "|" +
+               bug.getStatus() + "|" +
+               bug.getReporterId() + "|" +
+               bug.getAssigneeId() + "|" +
+               (bug.getScreenshotPath() != null ? bug.getScreenshotPath() : "null") + "|" +
+               bug.getBugDate().format(DATE_FORMAT) + "|" +
+               bug.getCreatedAt().format(DATE_TIME_FORMAT) + "|" +
+               bug.getUpdatedAt().format(DATE_TIME_FORMAT);
     }
 
-
-    /**
-     * Create the data file with header
-     */
-    private void createDataFile() {
+    private void ensureFileExists() {
         try {
             File file = new File(FILE_PATH);
-            if (file.createNewFile()) {       //create file if not exist and return 1(if exist return 0)
-                PrintWriter printWriter = new PrintWriter(FILE_PATH);
-                printWriter.println(HEADER);
-                printWriter.close();
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error creating file: " + e.getMessage());
         }
     }
 
-    /**
-     * Generate the next available ID
-     */
     private int generateNextId() {
         int maxId = 0;
         for (Bug bug : bugsCache) {
-            if (bug.getId() > maxId) {
-                maxId = bug.getId();
-            }
+            if (bug.getId() > maxId) maxId = bug.getId();
         }
         return maxId + 1;
     }
 
-    // ==================== COUNT & EXISTS ====================
-
     /**
-     * Check if title exists
-     *
-     * @param title The title to check
-     * @return true if exists
+     * Get the next available ID for a new bug (public method)
      */
-    public boolean existsByTitle(String title) {
-        return findByTitle(title) != null;
+    public int getNextId() {
+        return generateNextId();
     }
 
-    /**
-     * Check if bug ID exists
-     *
-     * @param id The ID to check
-     * @return true if exists
-     */
-    public boolean existsById(int id) {
-        return findById(id) != null;
+    public void refresh() {
+        loadFromFile();
     }
-
-    /**
-     * Get total number of bugs
-     * @return bugs count
-     */
-    public int getTotalBugsCount() {
-        return bugsCache.size();
-    }
-
-    /**
-     * Count bugs by status
-     * @param status The status to count
-     * @return Number of status with the specified role
-     */
-    public int getBugsCountByStatus(BugStatus status) {
-        int count = 0;
-        for (Bug bug : bugsCache) {
-            if (bug.getStatus() == status) {
-                count++;
-            }
-        }
-        return count;
-    }
-
 }

@@ -1,2 +1,11 @@
-id\|firstName\|lastName\|username\|email\|password\|role\|createdAt\|updatedAt
-1\|System\|Admin\|admin\|admin@system.com\|admin123\|ADMIN\|2025-12-18T01:37:27.096271400\|2025-12-18T01:37:27.096271400
+id|firstName|lastName|username|email|password|role|createdAt|updatedAt
+1|System|Admin|admin|admin@bugtracker.com|admin123|ADMIN|2025-12-01T09:00:00|2025-12-01T09:00:00
+2|John|Smith|developer|john.smith@bugtracker.com|dev123|DEVELOPER|2025-12-01T09:00:00|2025-12-01T09:00:00
+3|Jane|Wilson|tester|jane.wilson@bugtracker.com|test123|TESTER|2025-12-01T09:00:00|2025-12-01T09:00:00
+4|Mike|Johnson|pm|mike.johnson@bugtracker.com|pm123|PROJECT_MANAGER|2025-12-01T09:00:00|2025-12-01T09:00:00
+5|Sarah|Davis|developer2|sarah.davis@bugtracker.com|dev123|DEVELOPER|2025-12-05T10:30:00|2025-12-05T10:30:00
+6|Tom|Brown|developer3|tom.brown@bugtracker.com|dev123|DEVELOPER|2025-12-05T10:30:00|2025-12-05T10:30:00
+7|Emily|Taylor|tester2|emily.taylor@bugtracker.com|test123|TESTER|2025-12-08T14:00:00|2025-12-08T14:00:00
+8|David|Anderson|tester3|david.anderson@bugtracker.com|test123|TESTER|2025-12-10T11:00:00|2025-12-10T11:00:00
+9|Lisa|Martinez|pm2|lisa.martinez@bugtracker.com|pm123|PROJECT_MANAGER|2025-12-10T11:00:00|2025-12-10T11:00:00
+10|Robert|Garcia|admin2|robert.garcia@bugtracker.com|admin123|ADMIN|2025-12-12T08:00:00|2025-12-12T08:00:00

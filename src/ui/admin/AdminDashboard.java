@@ -9,7 +9,8 @@ import enums.Role;
 import ui.common.*;
 import dao.*;
 import models.*;
-import  java.util.*;
+import services.SessionManager;
+import java.util.*;
 /**
  * Admin Dashboard - Main screen for administrators
  * @author Team
@@ -17,6 +18,7 @@ import  java.util.*;
 public class AdminDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminDashboard.class.getName());
+    private final UserDAO userDAO;
 
     /**
      * Creates new form AdminDashboard
@@ -24,6 +26,19 @@ public class AdminDashboard extends javax.swing.JFrame {
     public AdminDashboard() {
         initComponents();
         setLocationRelativeTo(null);
+        userDAO = new UserDAO();
+        initializeDashboard();
+    }
+    
+    private void initializeDashboard() {
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            lblWelcome.setText("Welcome, " + currentUser.getFullName());
+        }
+        txtActivity.setText(getActivityDataFromDB());
+        updateStats(userDAO.count(), userDAO.countByRole(Role.PROJECT_MANAGER), 
+                   userDAO.countByRole(Role.DEVELOPER), userDAO.countByRole(Role.TESTER));
+        updateDashboard(fetchAllUsers());
     }
 
     /**
@@ -920,7 +935,8 @@ public class AdminDashboard extends javax.swing.JFrame {
             "Confirm Logout",
             javax.swing.JOptionPane.YES_NO_OPTION);
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            // Open Login Form and close Admin Dashboard
+            // Clear session and open Login Form
+            SessionManager.getInstance().logout();
             new LoginForm().setVisible(true);
             this.dispose();
         }
@@ -1095,24 +1111,22 @@ public class AdminDashboard extends javax.swing.JFrame {
         model.setRowCount(0);
     }
 
-    // Dummy method to get logged-in user 
-    //this should be replaced with actual authentication logic
-    // that will be implemented by abdo
+    // Get logged-in user from SessionManager
     public static User getLogedInUser() {
-        UserDAO userDAO = new UserDAO();
-        return userDAO.findById(1); // Dummy user for now
+        return SessionManager.getInstance().getCurrentUser();
     }
     
     private List<User> fetchAllUsers() {
-        UserDAO userDAO = new UserDAO();
         userDAO.refresh();
         return userDAO.findAll();
     }
 
     private void updateDashboard(List<User> users) {
         clearUsersTable();
+        User currentUser = getLogedInUser();
+        int currentUserId = currentUser != null ? currentUser.getId() : -1;
         for (User user : users) {
-            if (user.getId() != getLogedInUser().getId()) {               
+            if (user.getId() != currentUserId) {               
                 addUserToTable(
                     String.valueOf(user.getId()),
                     user.getFullName(),
@@ -1161,19 +1175,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            AdminDashboard dashboard = new AdminDashboard();
-            UserDAO userDAO = new UserDAO();
-            User logedInUser = getLogedInUser();
-            
-            dashboard.lblWelcome.setText("Welcome, " + logedInUser.getFullName());
-            dashboard.txtActivity.setText(dashboard.getActivityDataFromDB());
-
-            // Sample data for testing
-            dashboard.updateStats(userDAO.count(), userDAO.countByRole(Role.PROJECT_MANAGER), userDAO.countByRole(Role.DEVELOPER), userDAO.countByRole(Role.TESTER));
-            
-            dashboard.updateDashboard(dashboard. fetchAllUsers());
-
-            dashboard.setVisible(true);
+            // For testing - use LoginForm instead
+            new LoginForm().setVisible(true);
         });
     }
 

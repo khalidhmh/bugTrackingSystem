@@ -4,12 +4,15 @@
  */
 package ui.projectmanager;
 
-import dao.BugDAO; 
+import dao.BugDAO;
 import models.Bug;
+import models.User;
+import services.SessionManager;
+import ui.common.LoginForm;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.io.IOException;
+
 /**
  * Project Manager Dashboard - Main screen for project managers
  * @author Team
@@ -17,20 +20,28 @@ import java.io.IOException;
 public class PMDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PMDashboard.class.getName());
-    private final BugDAO bugDAO;  
+    private final BugDAO bugDAO;
+    private User currentPM;
+    
     /**
      * Creates new form PMDashboard
      */
     public PMDashboard() {
+        currentPM = SessionManager.getInstance().getCurrentUser();
         initComponents();
-     
-        this.bugDAO = new BugDAO(); 
+        setLocationRelativeTo(null);
         
+        this.bugDAO = new BugDAO(); 
+        initializeDashboard();
+    }
+    
+    private void initializeDashboard() {
+        if (currentPM != null) {
+            lblWelcome.setText("Welcome, " + currentPM.getFullName());
+        }
         loadDashboardStats();
         loadBugsTable(null, null); 
     }
-
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -347,81 +358,72 @@ public class PMDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-private void loadDashboardStats() {
-    try {
+    private void loadDashboardStats() {
+        bugDAO.refresh();
         
-        int totalBugs = bugDAO.getTotalBugsCount();
-        int openBugs = bugDAO.getBugsCountByStatus("Open");
-        int fixedBugs = bugDAO.getBugsCountByStatus("Fixed");
-        int closedBugs = bugDAO.getBugsCountByStatus("Closed");
+        int totalBugs = bugDAO.count();
+        int openBugs = bugDAO.countByStatus(enums.BugStatus.OPEN);
+        int fixedBugs = bugDAO.countByStatus(enums.BugStatus.RESOLVED);
+        int closedBugs = bugDAO.countByStatus(enums.BugStatus.CLOSED);
 
         lblTotalBugsValue.setText(String.valueOf(totalBugs)); 
         lblOpenValue.setText(String.valueOf(openBugs));       
         lblFixedValue.setText(String.valueOf(fixedBugs));     
         lblClosedValue.setText(String.valueOf(closedBugs));
-
-}
-    catch (java.io.IOException e) { 
-    JOptionPane.showMessageDialog(this, 
-                "Error loading dashboard stats from file: " + e.getMessage(), 
-                "File I/O Error", JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
     }
-}
 
-/**
- * @param searchField 
- * @param searchValue 
- */
-private void loadBugsTable(String searchField, String searchValue) {
-    DefaultTableModel model = (DefaultTableModel) BugsTable.getModel();
-    model.setRowCount(0); 
+    /**
+     * @param searchField 
+     * @param searchValue 
+     */
+    private void loadBugsTable(String searchField, String searchValue) {
+        DefaultTableModel model = (DefaultTableModel) BugsTable.getModel();
+        model.setRowCount(0); 
 
-    try {
-        List<Bug> bugs;
+        bugDAO.refresh();
+        List<Bug> bugs = bugDAO.findAll();
         
-        if (searchField == null || searchValue == null || searchValue.trim().isEmpty()) {
-            bugs = bugDAO.getAllBugs(); 
-        } else {
-            bugs = bugDAO.searchBugs(searchField, searchValue.trim()); // افترض أن searchBugs(field, value) موجودة
-        }
+        dao.UserDAO userDAO = new dao.UserDAO();
 
         for (Bug bug : bugs) {
+            // Filter by search if provided
+            if (searchValue != null && !searchValue.trim().isEmpty()) {
+                if (!bug.getTitle().toLowerCase().contains(searchValue.toLowerCase())) {
+                    continue;
+                }
+            }
+            
+            models.User reporter = userDAO.findById(bug.getReporterId());
+            models.User assignee = userDAO.findById(bug.getAssigneeId());
+            
             Object[] row = new Object[]{
                 bug.getId(),
                 bug.getTitle(),
                 bug.getStatus(),
-                bug.getReporter(), // (Tester)
-                bug.getAssignedToDev(),
-                bug.getCreatedDate(),
-                bug.getUpdatedDate()
+                reporter != null ? reporter.getFullName() : "Unknown",
+                assignee != null ? assignee.getFullName() : "Unassigned",
+                bug.getCreatedAt() != null ? bug.getCreatedAt().toLocalDate().toString() : "",
+                bug.getUpdatedAt() != null ? bug.getUpdatedAt().toLocalDate().toString() : ""
             };
             model.addRow(row);
         }
-
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, 
-                "Error loading bug table data: " + e.getMessage(), 
-                "Database Error", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
     }
-}
+
 
 
 
     
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         int confirm;
-    confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-            
+        confirm = javax.swing.JOptionPane.showConfirmDialog(this,
             "Are you sure you want to logout?",
             "Confirm Logout",
             javax.swing.JOptionPane.YES_NO_OPTION);
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            // Open Login Form and close Admin Dashboard
-            new ui.common.LoginForm().setVisible(true);
+            // Clear session and open Login Form
+            SessionManager.getInstance().logout();
+            new LoginForm().setVisible(true);
             this.dispose();
-            
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 
@@ -439,24 +441,7 @@ private void loadBugsTable(String searchField, String searchValue) {
             return;
         }
 
-        try {
-            List<Bug> results = bugDAO.searchBugs("Title", searchValue);
-            
-            if (results.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                        "No bugs found matching: " + searchValue,
-                        "Search Results",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            }
-            
-            loadBugsTable("Title", searchValue); 
-            
-        } catch (IOException e) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                    "Could not load data. Check file permissions.",
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
+        loadBugsTable("Title", searchValue); 
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed

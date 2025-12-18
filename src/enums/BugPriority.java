@@ -1,8 +1,7 @@
 package enums;
 
 /**
- *
- * @author Ammar
+ * Bug priority levels
  */
 public enum BugPriority {
     LOW,

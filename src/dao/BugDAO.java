@@ -3,8 +3,8 @@ package dao;
 import models.Bug;
 import models.Role;
 import models.User;
-
 import enums.*;
+import java.lang.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -221,12 +221,12 @@ public class BugDAO {
                 bug.setTitle(dataFields[1]);
                 bug.setDescription(dataFields[2]);
                 bug.setProjectName(dataFields[3]);
-                bug.setStatus(dataFields[4]);
-                bug.setPriority(dataFields[5]);
+                bug.setStatus(BugStatus.valueOf(dataFields[4]));
+                bug.setPriority(BugPriority.valueOf(dataFields[5]);
                 bug.setReporterId(dataFields[6]);
                 bug.setAssigneeId(Role.valueOf(dataFields[7]));
-                bug.setCreatedADate(LocalDateTime.parse(dataFields[8], DATE_FORMAT));
-                bug.setUpdatedDate(LocalDateTime.parse(dataFields[9], DATE_FORMAT));
+                bug.setCreatedAt(LocalDateTime.parse(dataFields[8], DATE_FORMAT));
+                bug.setUpdatedAt(LocalDateTime.parse(dataFields[9], DATE_FORMAT));
                 return bug;
             }
         } catch (Exception e) {
@@ -265,10 +265,10 @@ public class BugDAO {
                 + bug.getProjectName() + DELIMITER
                 + bug.getStatus() + DELIMITER
                 + bug.getPriority() + DELIMITER;
-                + bug.getReporterId() + DELIMITER
-                + bug.getAssigneeId() + DELIMITER
-                + bug.getCreatedDate() + DELIMITER
-                + bug.getUpdatedDate();
+        return +bug.getReporter().getId() + DELIMITER
+                + bug.getAssignee().getId() + DELIMITER
+                + bug.getCreatedAt() + DELIMITER
+                + bug.getUpdatedAt();
     }
 
 

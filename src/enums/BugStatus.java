@@ -7,6 +7,6 @@ package enums;
 public enum BugStatus {
     OPEN,
     IN_PROGRESS,
-    FIXED,
+    RESOLVED,
     CLOSED
 }

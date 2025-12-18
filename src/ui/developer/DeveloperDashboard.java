@@ -617,9 +617,9 @@ private void updateStatistics(List<Bug> bugs) {
         // Total bugs assigned to this developer
         lblUsersCountValue.setText(String.valueOf(bugs.size()));
 
-        // Bugs fixed (status = FIXED)
+        // Bugs fixed (status = RESOLVED)
         long fixedCount = bugs.stream()
-            .filter(bug -> bug.getStatus() == BugStatus.FIXED)
+            .filter(bug -> bug.getStatus() == BugStatus.RESOLVED)
             .count();
         lblPMCountValue.setText(String.valueOf(fixedCount));
 
